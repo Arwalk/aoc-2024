@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::iter::zip;
 
 advent_of_code::solution!(1);
@@ -30,17 +31,15 @@ pub fn part_one(input: &str) -> Option<u64> {
 pub fn part_two(input: &str) -> Option<u64> {
     Some({
         let (left, right) = parse_input(input);
-        let mut val: u64 = 0;
-        for item in &left {
-            let mut t: u64 = 0;
-            for another in &right {
-                if item == another {
-                    t += 1;
-                }
+        let mut counters : HashMap<u64, u64> = HashMap::new();
+        for v in right {
+            if counters.contains_key(&v) {
+                *counters.get_mut(&v).unwrap() += 1;
+            } else {
+                counters.insert(v, 1);
             }
-            val += item * t;
         }
-        val
+        left.iter().fold(0, |acc, x| acc + (counters.get(x).unwrap_or(&0) * x))
     })
 }
 
